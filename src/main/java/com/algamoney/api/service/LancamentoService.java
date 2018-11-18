@@ -14,6 +14,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.algamoney.api.dto.LancamentoEstatisticaPessoa;
 import com.algamoney.api.mail.Mailer;
@@ -24,6 +25,7 @@ import com.algamoney.api.repository.LancamentoRepository;
 import com.algamoney.api.repository.PessoaRepository;
 import com.algamoney.api.repository.UsuarioRepository;
 import com.algamoney.api.service.exception.PessoaInexistenteOuInativaException;
+import com.algamoney.api.storage.S3;
 
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
@@ -48,6 +50,11 @@ public class LancamentoService {
 	
 	@Autowired
 	private Mailer mailer;
+	
+	@Autowired
+	private S3 s3;
+	
+	
 	
 	//@Scheduled(fixedDelay = 1000 * 60 * 30) //PODE SE USAR O DELAY FIXO
 	@Scheduled(cron = "0 0 6 * * *")  // cron = "segundo minuto hora dia mês dias_da_semana" // SERÁ ENVIADO TODOS OS DIAS AS 6 DA MANHÃ
@@ -100,6 +107,12 @@ public class LancamentoService {
 
 	public Lancamento salvar(Lancamento lancamento) {
 		validarPessoa(lancamento);
+		
+		
+		
+		if (StringUtils.hasText(lancamento.getAnexo())) {
+			s3.salvar(lancamento.getAnexo());
+		}
 
 		return lancamentoRepository.save(lancamento);
 	}
