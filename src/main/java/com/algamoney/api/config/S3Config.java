@@ -8,6 +8,7 @@ import com.algamoney.api.config.property.AlgamoneyApiProperty;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.BucketLifecycleConfiguration;
@@ -31,6 +32,7 @@ public class S3Config {
 		// Instancia um novo objeto amazonS3
 		AmazonS3 amazonS3 = AmazonS3ClientBuilder.standard()
 				.withCredentials(new AWSStaticCredentialsProvider(credentials))
+				.withRegion(Regions.EU_WEST_1)
 				.build();
 		
 		// Se não existir cria um novo bucket

@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.algamoney.api.dto.Anexo;
 import com.algamoney.api.dto.LancamentoEstatisticaCategoria;
 import com.algamoney.api.dto.LancamentoEstatisticaDia;
 import com.algamoney.api.event.RecursoCriadoEvent;
@@ -45,6 +46,7 @@ import com.algamoney.api.repository.filter.LancamentoFilter;
 import com.algamoney.api.repository.projection.ResumoLancamento;
 import com.algamoney.api.service.LancamentoService;
 import com.algamoney.api.service.exception.PessoaInexistenteOuInativaException;
+import com.algamoney.api.storage.S3;
 
 @RestController
 @RequestMapping("/lancamentos")
@@ -62,15 +64,23 @@ public class LancamentoResource {
 	@Autowired
 	private MessageSource messageSource;
 	
+	@Autowired
+	private S3 s3;
+	
 	@PostMapping("/anexo")
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
-	public String uploadAnexo(@RequestParam MultipartFile anexo) throws IOException {
-		OutputStream out =  new FileOutputStream("C:\\Users\\andre\\Documents\\anexo--" + anexo.getOriginalFilename());
+	public Anexo uploadAnexo(@RequestParam MultipartFile anexo) throws IOException {
 		
-		out.write(anexo.getBytes());
-		out.close();
+		/**
+		 * Salva o documento na pasta selecionada do computador
+		 */
+		//OutputStream out =  new FileOutputStream("C:\\Users\\andre\\Documents\\anexo--" + anexo.getOriginalFilename());		
+		//out.write(anexo.getBytes());
+		//out.close();
+		//return "ok";
 		
-		return "ok";
+		String nome = s3.salvarTemporariamente(anexo);				
+		return new Anexo(nome, s3.configurarUrl(nome));
 				
 	}
 	
