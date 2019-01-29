@@ -10,9 +10,9 @@ import com.algamoney.api.config.property.AlgamoneyApiProperty;
 @SpringBootApplication
 @EnableConfigurationProperties(AlgamoneyApiProperty.class)
 public class AlgamoneyApiApplication {
-
-	private static ApplicationContext APPLICATION_CONTEXT;
 	
+	private static ApplicationContext APPLICATION_CONTEXT;
+
 	public static void main(String[] args) {
 		APPLICATION_CONTEXT = SpringApplication.run(AlgamoneyApiApplication.class, args);
 	}

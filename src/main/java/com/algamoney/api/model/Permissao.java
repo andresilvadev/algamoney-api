@@ -48,6 +48,4 @@ public class Permissao {
 		return true;
 	}
 	
-	
-	
 }
